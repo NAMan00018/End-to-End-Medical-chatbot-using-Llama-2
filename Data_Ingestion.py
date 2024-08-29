@@ -23,6 +23,5 @@ def create_vector_db():
     
     # Save the FAISS vector store locally
     db.save_local(DB_FAISS_PATH)
-
 if __name__ == '__main__':
     create_vector_db()
