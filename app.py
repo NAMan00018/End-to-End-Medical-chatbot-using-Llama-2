@@ -43,27 +43,30 @@ def retrieval_qa_chain(llm,PROMPT,db):
         chain_type_kwargs={"prompt": PROMPT})
     return qa_chain
 
-def qa_bot():
-    embeddings=HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2',model_kwargs={'device':'cpu'})
-    db=FAISS.load_local(DB_FAISS_PATH,embeddings)
-    llm=load_llm()
-    qa_prompt=set_custom_prompt()
-    qa=retrieval_qa_chain(llm,qa_prompt,db)
+def qa_bot(input_query):
+    embeddings = HuggingFaceEmbeddings(model_name='sentence-transformers/all-MiniLM-L6-v2', model_kwargs={'device': 'cpu'})
+    db = FAISS.load_local(DB_FAISS_PATH, embeddings)
+    llm = load_llm()
+    qa_prompt = set_custom_prompt()
+    qa = retrieval_qa_chain(llm, qa_prompt, db)
 
-    return qa
+    result = qa({"query": input_query})
+    return result["result"]
+
 
 @app.route("/")
 def index():
     return render_template('chat.html')
 
+
 @app.route("/get", methods=["GET", "POST"])
 def chat():
     msg = request.form["msg"]
-    input = msg
-    print(input)
-    result=qa_bot({"query": input})
-    print("Response : ", result["result"])
-    return str(result["result"])
+    input_query = msg
+    print(input_query)
+    response = qa_bot(input_query)
+    print("Response : ", response)
+    return str(response)
 
 
 
