@@ -61,7 +61,7 @@ def chat():
     msg = request.form["msg"]
     input = msg
     print(input)
-    result=qa({"query": input})
+    result=qa_bot({"query": input})
     print("Response : ", result["result"])
     return str(result["result"])
 
